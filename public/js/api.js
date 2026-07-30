@@ -237,5 +237,18 @@ const API = {
             else chat.unread.customer = false;
             saveChats(chats);
         }
+    },
+    async getBanner() {
+        const data = await apiFetch('/banner');
+        if (data && data.text) return data;
+        return getBanner();
+    },
+    async updateBanner(banner) {
+        const data = await apiFetch('/banner', {
+            method: 'PUT', body: JSON.stringify(banner)
+        });
+        if (data) return data;
+        saveBanner(banner);
+        return banner;
     }
 };

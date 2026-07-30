@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner – WatchLux Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📢</text></svg>">
+</head>
+<body>
+    <div class="admin-sidebar">
+        <h2>Watch<span>Lux</span> Admin</h2>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="products.html">📦 Products</a>
+        <a href="add-product.html">➕ Add Product</a>
+        <a href="orders.html">📋 Orders</a>
+        <a href="reviews.html">⭐ Reviews</a>
+        <a href="chat.html">💬 Chat</a>
+        <a href="banner.html" class="active">📢 Offer Banner</a>
+        <a href="#" onclick="showChangePassword()" style="font-size:12px;">🔑 Change Password</a>
+        <a href="#" onclick="logout()" style="color:#ef4444;font-size:12px;">🚪 Logout</a>
+        <a href="../index.html" style="margin-top:20px;border-top:1px solid rgba(0,0,0,0.06);padding-top:16px;">← Back to Store</a>
+    </div>
+
+    <div class="admin-main">
+        <div class="admin-header">
+            <h1>📢 Offer Banner</h1>
+        </div>
+        <div style="max-width:600px;">
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+                <div style="margin-bottom:16px;">
+                    <label class="form-label">Banner Text</label>
+                    <input type="text" id="banner-text" class="form-input" placeholder="e.g. 🔥 Free Shipping on All Orders!">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label class="form-label">Link URL (optional)</label>
+                    <input type="text" id="banner-link" class="form-input" placeholder="e.g. shop.html">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                    <div>
+                        <label class="form-label">Background Color</label>
+                        <input type="color" id="banner-bg" class="form-input" value="#1a1a1a" style="padding:4px;height:48px;">
+                    </div>
+                    <div>
+                        <label class="form-label">Text Color</label>
+                        <input type="color" id="banner-color" class="form-input" value="#ffffff" style="padding:4px;height:48px;">
+                    </div>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" id="banner-active" checked style="width:18px;height:18px;accent-color:var(--primary);">
+                        <span style="font-size:14px;">Show Banner</span>
+                    </label>
+                </div>
+                <div style="margin-bottom:20px;padding:16px;background:var(--bg-secondary);border-radius:var(--radius);text-align:center;border:1px dashed var(--border);">
+                    <p style="font-size:12px;color:var(--gray);margin-bottom:8px;">Preview:</p>
+                    <div id="banner-preview" style="padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;display:inline-block;">🔥 Free Shipping on All Orders!</div>
+                </div>
+                <button onclick="saveBanner()" class="btn-primary" style="width:100%;justify-content:center;">Save Banner</button>
+                <p id="banner-msg" style="text-align:center;font-size:13px;margin-top:8px;display:none;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/admin-protect.js"></script>
+    <script src="../js/admin-shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadBanner);
+
+        ['banner-text','banner-link','banner-bg','banner-color'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updatePreview);
+        });
+        document.getElementById('banner-active').addEventListener('change', updatePreview);
+
+        function updatePreview() {
+            const el = document.getElementById('banner-preview');
+            el.textContent = document.getElementById('banner-text').value || 'Banner Text';
+            el.style.background = document.getElementById('banner-bg').value;
+            el.style.color = document.getElementById('banner-color').value;
+        }
+
+        async function loadBanner() {
+            const b = await API.getBanner();
+            if (b.text) {
+                document.getElementById('banner-text').value = b.text || '';
+                document.getElementById('banner-link').value = b.link || '';
+                document.getElementById('banner-bg').value = b.bgColor || '#1a1a1a';
+                document.getElementById('banner-color').value = b.textColor || '#ffffff';
+                document.getElementById('banner-active').checked = b.active !== false;
+                updatePreview();
+            }
+        }
+
+        async function saveBanner() {
+            const banner = {
+                text: document.getElementById('banner-text').value,
+                link: document.getElementById('banner-link').value,
+                bgColor: document.getElementById('banner-bg').value,
+                textColor: document.getElementById('banner-color').value,
+                active: document.getElementById('banner-active').checked
+            };
+            await API.updateBanner(banner);
+            const msg = document.getElementById('banner-msg');
+            msg.style.display = 'block';
+            msg.style.color = '#16a34a';
+            msg.textContent = '✓ Banner saved! It will appear on the website.';
+            setTimeout(() => msg.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>

@@ -28,9 +28,9 @@ app.use('/uploads', express.static(uploadsDir));
 
 function readData() {
     try {
-        if (!fs.existsSync(DATA_FILE)) return { products: [], orders: [], reviews: [] };
+        if (!fs.existsSync(DATA_FILE)) return { products: [], orders: [], reviews: [], banner: {} };
         return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-    } catch { return { products: [], orders: [], reviews: [] }; }
+    } catch { return { products: [], orders: [], reviews: [], banner: {} }; }
 }
 
 function writeData(data) {
@@ -304,6 +304,18 @@ app.post('/api/chats/:id/read', (req, res) => {
     else chat.unread.customer = false;
     writeData(data);
     res.json({ success: true });
+});
+
+app.get('/api/banner', (req, res) => {
+    const banner = readData().banner || {};
+    res.json(banner);
+});
+
+app.put('/api/banner', (req, res) => {
+    const data = readData();
+    data.banner = req.body;
+    writeData(data);
+    res.json(data.banner);
 });
 
 app.get('*', (req, res) => {

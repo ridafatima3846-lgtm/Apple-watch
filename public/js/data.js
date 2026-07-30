@@ -100,6 +100,14 @@ const DEFAULT_PRODUCTS = [
     }
 ];
 
+function getBanner() {
+    return JSON.parse(localStorage.getItem('watchlux_banner') || '{}');
+}
+
+function saveBanner(banner) {
+    localStorage.setItem('watchlux_banner', JSON.stringify(banner));
+}
+
 function getProducts() {
     const stored = localStorage.getItem('watchlux_products');
     if (stored) {
