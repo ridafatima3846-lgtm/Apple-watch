@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Order – WatchLux</title>
+    <title>Track Order â€“ WatchLux</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='30' width='70' height='50' rx='10' fill='%23c8a45c'/><rect x='25' y='38' width='50' height='34' rx='4' fill='%231a1a1a'/><circle cx='50' cy='55' r='10' fill='%23c8a45c'/><rect x='42' y='80' width='16' height='10' rx='3' fill='%23c8a45c'/><rect x='30' y='88' width='8' height='8' rx='2' fill='%238a8a8a'/><rect x='62' y='88' width='8' height='8' rx='2' fill='%238a8a8a'/></svg>">
 </head>
@@ -27,7 +27,7 @@
             <li><a href="shop.html">Shop</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="track.html" class="active">📍 Track Order</a></li>
+            <li><a href="track.html" class="active">ðŸ“ Track Order</a></li>
             <li><a href="cart.html">Cart (<span class="cart-count" style="position:static;display:inline;background:none;color:inherit;font-size:13px;width:auto;height:auto;">0</span>)</a></li>
         </ul>
         <button class="theme-toggle" aria-label="Switch Theme">
@@ -101,26 +101,26 @@
             </div>
 
             <div id="track-allow-card" style="display:none;background:linear-gradient(135deg,#fff7ed,#fff);border:1px solid #fed7aa;border-radius:var(--radius-xl);padding:32px;margin-bottom:24px;text-align:center;">
-                <div style="font-size:48px;margin-bottom:12px;">📬</div>
-                <h3 style="font-size:1.3rem;font-weight:800;color:#c2410c;margin-bottom:8px;">📦 Open to Allow Parcel</h3>
+                <div style="font-size:48px;margin-bottom:12px;">ðŸ“¬</div>
+                <h3 style="font-size:1.3rem;font-weight:800;color:#c2410c;margin-bottom:8px;">ðŸ“¦ Open to Allow Parcel</h3>
                 <p style="color:#9a3412;font-size:15px;line-height:1.7;max-width:500px;margin:0 auto;">
                     Your parcel has arrived. Please open the package and check the item at the time of delivery.
                     You may accept or reject the order after inspection.
                 </p>
                 <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-                    <span style="padding:8px 20px;background:#dc2626;color:white;border-radius:8px;font-weight:700;font-size:13px;">❌ Reject</span>
-                    <span style="padding:8px 20px;background:#16a34a;color:white;border-radius:8px;font-weight:700;font-size:13px;">✅ Accept</span>
+                    <span style="padding:8px 20px;background:#dc2626;color:white;border-radius:8px;font-weight:700;font-size:13px;">âŒ Reject</span>
+                    <span style="padding:8px 20px;background:#16a34a;color:white;border-radius:8px;font-weight:700;font-size:13px;">âœ… Accept</span>
                 </div>
             </div>
 
             <div id="track-timeline" style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;">
-                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:24px;">📍 Tracking Timeline</h3>
+                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:24px;">ðŸ“ Tracking Timeline</h3>
                 <div id="track-timeline-items"></div>
             </div>
             <div id="track-chat" style="display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;margin-top:24px;text-align:center;">
                 <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px;">Need help with your order?</p>
                 <a id="chat-wa-link" href="#" target="_blank" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:14px 32px;">
-                    💬 Chat with Admin on WhatsApp
+                    ðŸ’¬ Chat with Admin on WhatsApp
                 </a>
             </div>
         </div>
@@ -147,7 +147,7 @@
             </div>
             <div class="footer-col">
                 <h4>Contact</h4>
-                <a href="https://wa.me/923001234567" target="_blank">WhatsApp</a>
+                <a href="https://wa.me/923299847609" target="_blank">WhatsApp</a>
                 <a href="mailto:info@watchlux.com">Email Us</a>
             </div>
         </div>
@@ -204,7 +204,7 @@
                 const productsEl = document.getElementById('track-products');
                 productsEl.innerHTML = (order.products || []).map(p => `
                     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;">
-                        <span>${p.name} × ${p.quantity}</span>
+                        <span>${p.name} Ã— ${p.quantity}</span>
                         <span style="font-weight:600;">PKR ${(p.price * p.quantity).toLocaleString()}</span>
                     </div>
                 `).join('');

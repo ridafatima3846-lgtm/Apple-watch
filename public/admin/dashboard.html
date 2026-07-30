@@ -1,26 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard – WatchLux</title>
+    <title>Admin Dashboard â€“ WatchLux</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌚</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>âŒš</text></svg>">
 </head>
 <body>
     <div class="admin-sidebar">
         <h2>Watch<span>Lux</span> Admin</h2>
-        <a href="dashboard.html" class="active">📊 Dashboard</a>
-        <a href="products.html">📦 Products</a>
-        <a href="add-product.html">➕ Add Product</a>
-        <a href="orders.html">📋 Orders</a>
-        <a href="reviews.html">⭐ Reviews</a>
-        <a href="chat.html">💬 Chat</a>
-        <a href="banner.html">📢 Offer Banner</a>
-        <a href="#" onclick="showChangePassword()" style="font-size:12px;">🔑 Change Password</a>
-        <a href="#" onclick="logout()" style="color:#ef4444;font-size:12px;">🚪 Logout</a>
-        <a href="../index.html" style="margin-top:20px;border-top:1px solid rgba(0,0,0,0.06);padding-top:16px;">← Back to Store</a>
+        <a href="dashboard.html" class="active">ðŸ“Š Dashboard</a>
+        <a href="products.html">ðŸ“¦ Products</a>
+        <a href="add-product.html">âž• Add Product</a>
+        <a href="orders.html">ðŸ“‹ Orders</a>
+        <a href="reviews.html">â­ Reviews</a>
+        <a href="chat.html">ðŸ’¬ Chat</a>
+        <a href="banner.html">ðŸ“¢ Offer Banner</a>
+        <a href="#" onclick="showChangePassword()" style="font-size:12px;">ðŸ”‘ Change Password</a>
+        <a href="#" onclick="logout()" style="color:#ef4444;font-size:12px;">ðŸšª Logout</a>
+        <a href="../index.html" style="margin-top:20px;border-top:1px solid rgba(0,0,0,0.06);padding-top:16px;">â† Back to Store</a>
     </div>
 
     <div class="admin-main">
@@ -32,19 +32,19 @@
         <div id="dashboard-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px;">
             <div class="glass-card" style="padding:24px;">
                 <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Total Products</p>
-                <p id="total-products" style="font-size:2rem;font-weight:900;color:var(--primary);">—</p>
+                <p id="total-products" style="font-size:2rem;font-weight:900;color:var(--primary);">â€”</p>
             </div>
             <div class="glass-card" style="padding:24px;">
                 <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Total Orders</p>
-                <p id="total-orders" style="font-size:2rem;font-weight:900;color:var(--primary);">—</p>
+                <p id="total-orders" style="font-size:2rem;font-weight:900;color:var(--primary);">â€”</p>
             </div>
             <div class="glass-card" style="padding:24px;">
                 <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Total Revenue</p>
-                <p id="total-revenue" style="font-size:1.5rem;font-weight:900;color:var(--primary);">—</p>
+                <p id="total-revenue" style="font-size:1.5rem;font-weight:900;color:var(--primary);">â€”</p>
             </div>
             <div class="glass-card" style="padding:24px;">
                 <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Pending Orders</p>
-                <p id="pending-orders" style="font-size:2rem;font-weight:900;color:#fbbf24;">—</p>
+                <p id="pending-orders" style="font-size:2rem;font-weight:900;color:#fbbf24;">â€”</p>
             </div>
         </div>
 

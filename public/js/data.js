@@ -1,4 +1,4 @@
-const OWNER_NUMBER = '923001234567';
+const OWNER_NUMBER = '923299847609';
 
 function imgPath(path) {
     const depth = window.location.pathname.split('/').filter(s => s).length;
