@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order – WatchLux</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='30' width='70' height='50' rx='10' fill='%23c8a45c'/><rect x='25' y='38' width='50' height='34' rx='4' fill='%231a1a1a'/><circle cx='50' cy='55' r='10' fill='%23c8a45c'/><rect x='42' y='80' width='16' height='10' rx='3' fill='%23c8a45c'/><rect x='30' y='88' width='8' height='8' rx='2' fill='%238a8a8a'/><rect x='62' y='88' width='8' height='8' rx='2' fill='%238a8a8a'/></svg>">
+</head>
+<body>
+    <div class="loader">
+        <div class="loader-ring"></div>
+        <div class="loader-text">WatchLux</div>
+    </div>
+
+    <nav class="navbar scrolled">
+        <a href="index.html" class="nav-logo" style="color:var(--black);">Watch<span>Lux</span></a>
+        <button class="nav-toggle" style="color:var(--black);" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="4" y1="7" x2="20" y2="7"/>
+                <line x1="4" y1="12" x2="20" y2="12"/>
+                <line x1="4" y1="17" x2="20" y2="17"/>
+            </svg>
+        </button>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="track.html" class="active">📍 Track Order</a></li>
+            <li><a href="cart.html">Cart (<span class="cart-count" style="position:static;display:inline;background:none;color:inherit;font-size:13px;width:auto;height:auto;">0</span>)</a></li>
+        </ul>
+        <button class="theme-toggle" aria-label="Switch Theme">
+            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
+    </nav>
+
+    <div class="page-header">
+        <h1>Track Your Order</h1>
+        <p>Enter your Order ID or Phone Number to check your parcel status.</p>
+    </div>
+
+    <section style="max-width:800px;margin:0 auto;padding:0 24px 80px;">
+        <div id="track-search" style="max-width:500px;margin:0 auto 48px;">
+            <div style="display:flex;gap:12px;">
+                <input type="text" id="track-query" class="form-input" placeholder="Order ID (e.g. #1234) or Phone (e.g. 03xxxxxxxxx)">
+                <button onclick="searchOrder()" class="btn-primary" style="white-space:nowrap;">Track</button>
+            </div>
+            <p id="track-error" style="color:#ef4444;font-size:13px;margin-top:8px;display:none;">Order not found. Please check your Order ID or phone number.</p>
+        </div>
+
+        <div id="track-result" style="display:none;">
+            <div id="track-card" style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;margin-bottom:24px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border);">
+                    <div>
+                        <p style="font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Order ID</p>
+                        <p id="track-order-id" style="font-size:1.5rem;font-weight:900;color:var(--primary);"></p>
+                    </div>
+                    <div style="text-align:right;">
+                        <p style="font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;">Status</p>
+                        <span id="track-status-badge" class="status-badge"></span>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+                    <div>
+                        <p style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Customer</p>
+                        <p id="track-customer" style="font-weight:600;"></p>
+                    </div>
+                    <div>
+                        <p style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Phone</p>
+                        <p id="track-phone" style="font-weight:600;"></p>
+                    </div>
+                    <div>
+                        <p style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">City</p>
+                        <p id="track-city" style="font-weight:600;"></p>
+                    </div>
+                    <div>
+                        <p style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Payment</p>
+                        <p id="track-payment" style="font-weight:600;"></p>
+                    </div>
+                    <div style="grid-column:1/-1;">
+                        <p style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Address</p>
+                        <p id="track-address" style="font-weight:600;"></p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <p style="font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Products</p>
+                    <div id="track-products"></div>
+                    <div style="display:flex;justify-content:space-between;padding:12px 0;margin-top:8px;border-top:1px solid var(--border);">
+                        <span style="font-weight:700;">Total</span>
+                        <span id="track-total" style="font-weight:900;color:var(--primary);font-size:1.1rem;"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="track-allow-card" style="display:none;background:linear-gradient(135deg,#fff7ed,#fff);border:1px solid #fed7aa;border-radius:var(--radius-xl);padding:32px;margin-bottom:24px;text-align:center;">
+                <div style="font-size:48px;margin-bottom:12px;">📬</div>
+                <h3 style="font-size:1.3rem;font-weight:800;color:#c2410c;margin-bottom:8px;">📦 Open to Allow Parcel</h3>
+                <p style="color:#9a3412;font-size:15px;line-height:1.7;max-width:500px;margin:0 auto;">
+                    Your parcel has arrived. Please open the package and check the item at the time of delivery.
+                    You may accept or reject the order after inspection.
+                </p>
+                <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <span style="padding:8px 20px;background:#dc2626;color:white;border-radius:8px;font-weight:700;font-size:13px;">❌ Reject</span>
+                    <span style="padding:8px 20px;background:#16a34a;color:white;border-radius:8px;font-weight:700;font-size:13px;">✅ Accept</span>
+                </div>
+            </div>
+
+            <div id="track-timeline" style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;">
+                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:24px;">📍 Tracking Timeline</h3>
+                <div id="track-timeline-items"></div>
+            </div>
+            <div id="track-chat" style="display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;margin-top:24px;text-align:center;">
+                <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px;">Need help with your order?</p>
+                <a id="chat-wa-link" href="#" target="_blank" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:14px 32px;">
+                    💬 Chat with Admin on WhatsApp
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer" style="margin-top:80px;">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>WatchLux</h4>
+                <p style="color:var(--gray);font-size:14px;line-height:1.6;">Premium smart watch store with the best prices and free gifts.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="shop.html">Shop</a>
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="faq.html">FAQ</a>
+            </div>
+            <div class="footer-col">
+                <h4>Policies</h4>
+                <a href="exchange-policy.html">Exchange Policy</a>
+                <a href="shipping-policy.html">Shipping Policy</a>
+                <a href="no-return-policy.html">No Return Policy</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="https://wa.me/923001234567" target="_blank">WhatsApp</a>
+                <a href="mailto:info@watchlux.com">Email Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 WatchLux. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/chat-widget.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            if (loader) setTimeout(() => loader.classList.add('hidden'), 400);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Cart.updateBadge();
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+            if (q) {
+                document.getElementById('track-query').value = q;
+                searchOrder();
+            }
+        });
+
+        function searchOrder() {
+            const query = document.getElementById('track-query').value.trim();
+            const errorEl = document.getElementById('track-error');
+            const resultEl = document.getElementById('track-result');
+            if (!query) { errorEl.style.display = 'block'; return; }
+            API.trackOrder(query).then(order => {
+                errorEl.style.display = 'none';
+                resultEl.style.display = 'block';
+                document.getElementById('track-order-id').textContent = order.orderId;
+                const badge = document.getElementById('track-status-badge');
+                badge.textContent = order.status;
+                badge.className = 'status-badge status-' + order.status.replace(/ /g, '');
+                document.getElementById('track-customer').textContent = order.customerName;
+                document.getElementById('track-phone').textContent = order.phone;
+                document.getElementById('track-city').textContent = order.city;
+                document.getElementById('track-payment').textContent = order.paymentMethod || 'Cash on Delivery';
+                document.getElementById('track-address').textContent = order.address || '';
+                document.getElementById('track-total').textContent = 'PKR ' + (order.totalAmount || 0).toLocaleString();
+                const allowCard = document.getElementById('track-allow-card');
+                if (order.status === 'Open to Allow Parcel') {
+                    allowCard.style.display = 'block';
+                } else {
+                    allowCard.style.display = 'none';
+                }
+                const productsEl = document.getElementById('track-products');
+                productsEl.innerHTML = (order.products || []).map(p => `
+                    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;">
+                        <span>${p.name} × ${p.quantity}</span>
+                        <span style="font-weight:600;">PKR ${(p.price * p.quantity).toLocaleString()}</span>
+                    </div>
+                `).join('');
+
+                const timelineEl = document.getElementById('track-timeline-items');
+                const updates = order.trackingUpdates || [];
+                if (updates.length === 0 && order.status === 'Pending') {
+                    timelineEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray);"><p>Your order has been placed and is pending confirmation. We will update tracking once it ships.</p></div>';
+                } else if (updates.length === 0) {
+                    timelineEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray);"><p>No tracking updates available yet.</p></div>';
+                } else {
+                    timelineEl.innerHTML = updates.map((u, i) => `
+                        <div style="display:flex;gap:20px;padding-left:28px;position:relative;padding-bottom:${i < updates.length - 1 ? '28px' : '0'};">
+                            <div style="position:absolute;left:0;top:4px;width:16px;height:16px;border-radius:50%;background:var(--primary);border:4px solid #f0eee9;z-index:1;box-shadow:0 0 0 2px var(--primary);"></div>
+                            ${i < updates.length - 1 ? '<div style="position:absolute;left:7px;top:20px;width:2px;bottom:0;background:var(--border);"></div>' : ''}
+                            <div style="flex:1;">
+                                <p style="font-weight:700;font-size:15px;color:var(--black);">${u.status}</p>
+                                ${u.note ? `<p style="color:var(--text-secondary);font-size:14px;margin:4px 0;line-height:1.5;">${u.note}</p>` : ''}
+                                <p style="font-size:12px;color:var(--gray);">${new Date(u.date).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                const chatEl = document.getElementById('track-chat');
+                const chatLink = document.getElementById('chat-wa-link');
+                const owner = API.getConfig().ownerNumber;
+                const chatMsg = encodeURIComponent('Assalam-o-Alaikum! I need help with my order ' + order.orderId + ' (' + order.customerName + ')');
+                chatLink.href = 'https://wa.me/' + owner + '?text=' + chatMsg;
+                chatEl.style.display = 'block';
+                resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }).catch(() => {
+                errorEl.style.display = 'block';
+                resultEl.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>

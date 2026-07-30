@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard – WatchLux</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌚</text></svg>">
+</head>
+<body>
+    <div class="admin-sidebar">
+        <h2>Watch<span>Lux</span> Admin</h2>
+        <a href="dashboard.html" class="active">📊 Dashboard</a>
+        <a href="products.html">📦 Products</a>
+        <a href="add-product.html">➕ Add Product</a>
+        <a href="orders.html">📋 Orders</a>
+        <a href="reviews.html">⭐ Reviews</a>
+        <a href="chat.html">💬 Chat</a>
+        <a href="../index.html" style="margin-top:40px;border-top:1px solid rgba(0,0,0,0.06);padding-top:20px;">← Back to Store</a>
+    </div>
+
+    <div class="admin-main">
+        <div class="admin-header">
+            <h1>Dashboard</h1>
+            <a href="../index.html" class="btn-outline" style="text-decoration:none;padding:10px 20px;font-size:12px;">View Store</a>
+        </div>
+
+        <div id="dashboard-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px;">
+            <div class="glass-card" style="padding:24px;">
+                <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Total Products</p>
+                <p id="total-products" style="font-size:2rem;font-weight:900;color:var(--primary);">—</p>
+            </div>
+            <div class="glass-card" style="padding:24px;">
+                <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Total Orders</p>
+                <p id="total-orders" style="font-size:2rem;font-weight:900;color:var(--primary);">—</p>
+            </div>
+            <div class="glass-card" style="padding:24px;">
+                <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Total Revenue</p>
+                <p id="total-revenue" style="font-size:1.5rem;font-weight:900;color:var(--primary);">—</p>
+            </div>
+            <div class="glass-card" style="padding:24px;">
+                <p style="color:var(--gray);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Pending Orders</p>
+                <p id="pending-orders" style="font-size:2rem;font-weight:900;color:#fbbf24;">—</p>
+            </div>
+        </div>
+
+        <div class="glass-card" style="padding:30px;text-align:center;">
+            <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:12px;">Welcome to WatchLux Admin</h3>
+            <p style="color:var(--gray);">Manage products, view orders, and update order statuses from this dashboard.</p>
+            <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+                <a href="products.html" class="btn-primary" style="text-decoration:none;">Manage Products</a>
+                <a href="orders.html" class="btn-outline" style="text-decoration:none;">View Orders</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

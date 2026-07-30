@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product – WatchLux Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌚</text></svg>">
+</head>
+<body>
+    <div class="admin-sidebar">
+        <h2>Watch<span>Lux</span> Admin</h2>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="products.html">📦 Products</a>
+        <a href="add-product.html" class="active">➕ Add Product</a>
+        <a href="orders.html">📋 Orders</a>
+        <a href="reviews.html">⭐ Reviews</a>
+        <a href="chat.html">💬 Chat</a>
+        <a href="../index.html" style="margin-top:40px;border-top:1px solid rgba(0,0,0,0.06);padding-top:20px;">← Back to Store</a>
+    </div>
+
+    <div class="admin-main">
+        <div class="admin-header">
+            <h1>Add New Product</h1>
+            <a href="products.html" class="btn-outline" style="text-decoration:none;padding:10px 20px;font-size:12px;">Cancel</a>
+        </div>
+
+        <form id="add-product-form" style="max-width:700px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div style="grid-column:1/-1;">
+                    <label class="form-label">Product Name</label>
+                    <input type="text" name="name" class="form-input" required placeholder="Smart Watch Pro">
+                </div>
+                <div style="grid-column:1/-1;">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-input" rows="4" required placeholder="Product description..."></textarea>
+                </div>
+                <div>
+                    <label class="form-label">Price (PKR)</label>
+                    <input type="number" name="price" class="form-input" required placeholder="89999">
+                </div>
+                <div>
+                    <label class="form-label">Stock</label>
+                    <input type="number" name="stock" class="form-input" required placeholder="10" value="10">
+                </div>
+                <div>
+                    <label class="form-label">Rating (0-5)</label>
+                    <input type="number" name="rating" class="form-input" step="0.1" min="0" max="5" value="4.5">
+                </div>
+                <div>
+                    <label class="form-label">Category</label>
+                    <input type="text" name="category" class="form-input" value="Smart Watch" placeholder="Smart Watch">
+                </div>
+                <div>
+                    <label class="form-label">Badge (e.g. HOT, BEST SELLER)</label>
+                    <input type="text" name="badge" class="form-input" placeholder="BEST SELLER">
+                </div>
+                <div style="grid-column:1/-1;">
+                    <label class="form-label">Free Gift Text</label>
+                    <input type="text" name="freeGift" class="form-input" value="Silver Chain Included" placeholder="e.g. Free Case Included">
+                </div>
+                <div>
+                    <label class="form-label">Colors (Name|Hex, comma separated)</label>
+                    <input type="text" name="colors" class="form-input" placeholder="Midnight|#1a1a2e, Starlight|#f5f0e8">
+                </div>
+                <div>
+                    <label class="form-label">Sizes (comma separated)</label>
+                    <input type="text" name="sizes" class="form-input" placeholder="41mm, 45mm">
+                </div>
+                <div style="grid-column:1/-1;">
+                    <label class="form-label">Product Images</label>
+                    <input type="file" name="images" accept="image/*" multiple class="form-input" style="padding:12px;">
+                    <p style="color:var(--gray);font-size:12px;margin-top:4px;">Select one or more images for the product</p>
+                </div>
+                <div style="grid-column:1/-1;">
+                    <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" name="featured" value="true" style="width:18px;height:18px;accent-color:var(--primary);">
+                        Featured Product
+                    </label>
+                </div>
+                <div style="grid-column:1/-1;display:flex;gap:12px;margin-top:12px;">
+                    <button type="submit" class="btn-primary">Add Product</button>
+                    <a href="products.html" class="btn-outline" style="text-decoration:none;">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

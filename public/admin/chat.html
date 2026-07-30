@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat – WatchLux Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+</head>
+<body>
+    <div class="admin-sidebar">
+        <h2>Watch<span>Lux</span> Admin</h2>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="products.html">📦 Products</a>
+        <a href="add-product.html">➕ Add Product</a>
+        <a href="orders.html">📋 Orders</a>
+        <a href="reviews.html">⭐ Reviews</a>
+        <a href="chat.html" class="active">💬 Chat</a>
+        <a href="../index.html" style="margin-top:40px;border-top:1px solid rgba(0,0,0,0.06);padding-top:20px;">← Back to Store</a>
+    </div>
+
+    <div class="admin-main">
+        <div class="admin-header">
+            <h1>💬 Customer Chats</h1>
+            <span id="unread-badge" style="background:#ef4444;color:white;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;display:none;">0 Unread</span>
+        </div>
+
+        <div id="chat-list" style="display:grid;gap:12px;max-width:800px;"></div>
+
+        <div id="chat-view" style="display:none;max-width:800px;">
+            <button onclick="backToChatList()" class="btn-outline" style="margin-bottom:16px;padding:8px 16px;font-size:12px;">← Back to Chats</button>
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;">
+                <div id="chat-view-header" style="padding:16px 20px;background:var(--gradient);color:white;font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center;"></div>
+                <div id="chat-view-messages" style="height:400px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--bg-secondary);"></div>
+                <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;">
+                    <input type="text" id="admin-chat-input" class="form-input" placeholder="Type your reply..." style="padding:10px 14px;font-size:13px;" onkeydown="if(event.key==='Enter') adminChatSend()">
+                    <button onclick="adminChatSend()" class="btn-primary" style="padding:10px 16px;font-size:12px;">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        let currentChatId = null;
+        let chatPollInterval = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChatList();
+        });
+
+        async function loadChatList() {
+            const list = document.getElementById('chat-list');
+            const chats = await API.getChats();
+            const unread = chats.filter(c => c.unread && c.unread.admin);
+            const badge = document.getElementById('unread-badge');
+            if (unread.length > 0) {
+                badge.style.display = 'inline';
+                badge.textContent = unread.length + ' Unread';
+            } else {
+                badge.style.display = 'none';
+            }
+            if (!chats || chats.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:60px;color:var(--gray);">No chats yet. Customers will appear here when they send a message.</div>';
+                return;
+            }
+            list.innerHTML = chats.map(c => {
+                const lastMsg = c.messages && c.messages.length > 0 ? c.messages[c.messages.length - 1] : null;
+                const isUnread = c.unread && c.unread.admin;
+                return '<div onclick="openChat(\'' + c._id + '\')" style="cursor:pointer;background:' + (isUnread ? 'rgba(200,164,92,0.08)' : 'var(--card-bg)') + ';border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;">' +
+                    '<div><p style="font-weight:700;font-size:14px;">' + (isUnread ? '💬 ' : '') + c.orderId + ' - ' + c.customerName + '</p>' +
+                    '<p style="font-size:12px;color:var(--gray);margin-top:4px;">📞 ' + c.customerPhone + '</p>' +
+                    (lastMsg ? '<p style="font-size:12px;color:var(--text-secondary);margin-top:6px;">' + lastMsg.text.substring(0, 60) + (lastMsg.text.length > 60 ? '...' : '') + '</p>' : '') +
+                    '</div>' +
+                    '<div style="text-align:right;"><p style="font-size:11px;color:var(--gray);">' + new Date(c.lastMessageAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + '</p>' +
+                    (isUnread ? '<span style="background:#ef4444;color:white;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-top:4px;display:inline-block;">New</span>' : '') +
+                    '</div></div>';
+            }).join('');
+        }
+
+        async function openChat(chatId) {
+            currentChatId = chatId;
+            document.getElementById('chat-list').style.display = 'none';
+            document.getElementById('chat-view').style.display = 'block';
+            await API.markChatRead(chatId, 'admin');
+            loadChatMessages(chatId);
+            startChatPolling(chatId);
+        }
+
+        function backToChatList() {
+            stopChatPolling();
+            currentChatId = null;
+            document.getElementById('chat-view').style.display = 'none';
+            document.getElementById('chat-list').style.display = 'grid';
+            loadChatList();
+        }
+
+        async function loadChatMessages(chatId) {
+            const msgs = await API.getChatMessages(chatId);
+            const chat = (await API.getChats()).find(c => c._id === chatId);
+            const header = document.getElementById('chat-view-header');
+            header.innerHTML = '<span>' + (chat ? chat.orderId + ' - ' + chat.customerName : 'Chat') + '</span><span style="font-size:12px;opacity:0.8;">📞 ' + (chat ? chat.customerPhone : '') + '</span>';
+            const msgEl = document.getElementById('chat-view-messages');
+            if (!msgs || msgs.length === 0) {
+                msgEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);font-size:13px;">No messages yet. Reply to start conversation.</div>';
+                return;
+            }
+            msgEl.innerHTML = msgs.map(m => {
+                const isAdmin = m.from === 'admin';
+                return '<div style="display:flex;' + (isAdmin ? 'justify-content:flex-end;' : '') + '">' +
+                    '<div style="max-width:80%;padding:10px 14px;border-radius:' + (isAdmin ? '12px 0 12px 12px' : '0 12px 12px 12px') + ';background:' + (isAdmin ? 'var(--primary)' : 'var(--card-bg)') + ';color:' + (isAdmin ? 'white' : 'var(--text-primary)') + ';box-shadow:0 1px 4px rgba(0,0,0,0.06);">' +
+                    '<p style="font-size:13px;line-height:1.5;">' + m.text + '</p>' +
+                    '<p style="font-size:10px;opacity:0.6;margin-top:4px;">' + new Date(m.timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + '</p>' +
+                    '</div></div>';
+            }).join('');
+            msgEl.scrollTop = msgEl.scrollHeight;
+        }
+
+        async function adminChatSend() {
+            const input = document.getElementById('admin-chat-input');
+            const text = input.value.trim();
+            if (!text || !currentChatId) return;
+            input.value = '';
+            document.getElementById('chat-view-messages').insertAdjacentHTML('beforeend',
+                '<div style="display:flex;justify-content:flex-end;">' +
+                '<div style="max-width:80%;padding:10px 14px;border-radius:12px 0 12px 12px;background:var(--primary);color:white;box-shadow:0 1px 4px rgba(0,0,0,0.06);">' +
+                '<p style="font-size:13px;line-height:1.5;">' + text + '</p>' +
+                '<p style="font-size:10px;opacity:0.6;margin-top:4px;">Just now</p>' +
+                '</div></div>'
+            );
+            document.getElementById('chat-view-messages').scrollTop = document.getElementById('chat-view-messages').scrollHeight;
+            await API.sendMessage(currentChatId, text, 'admin');
+        }
+
+        function startChatPolling(chatId) {
+            stopChatPolling();
+            chatPollInterval = setInterval(async () => {
+                const msgs = await API.getChatMessages(chatId);
+                const msgEl = document.getElementById('chat-view-messages');
+                const count = msgEl.querySelectorAll('p:first-child').length;
+                if (msgs && msgs.length > count) {
+                    loadChatMessages(chatId);
+                }
+            }, 4000);
+        }
+
+        function stopChatPolling() {
+            if (chatPollInterval) {
+                clearInterval(chatPollInterval);
+                chatPollInterval = null;
+            }
+        }
+    </script>
+</body>
+</html>
