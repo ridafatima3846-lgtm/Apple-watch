@@ -1,19 +1,9 @@
 {
   "name": "watchlux",
   "version": "1.0.0",
-  "description": "WatchLux Smart Watch Store",
-  "main": "server.js",
+  "description": "WatchLux Smart Watch Store - Frontend",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "multer": "^1.4.5-lts.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.9"
+    "serve": "npx serve public -l 5000",
+    "vercel-deploy": "npx vercel --prod"
   }
 }

@@ -1,6 +1,9 @@
 const API_BASE = window.location.origin + '/api';
 
+const STATIC_MODE = true;
+
 async function apiFetch(url, options = {}) {
+    if (STATIC_MODE) return null;
     try {
         const res = await fetch(API_BASE + url, {
             headers: { 'Content-Type': 'application/json', ...options.headers },
@@ -18,8 +21,7 @@ const API = {
         return { ownerNumber: OWNER_NUMBER };
     },
     async getProducts(params = {}) {
-        const qs = new URLSearchParams(params).toString();
-        const data = await apiFetch('/products' + (qs ? '?' + qs : ''));
+        const data = await apiFetch('/products' + (params ? '?' + new URLSearchParams(params) : ''));
         if (data) return data;
         let products = getProducts();
         if (params.featured === 'true') products = products.filter(p => p.featured);
@@ -32,14 +34,17 @@ const API = {
         return getProduct(id);
     },
     async createProduct(formData) {
-        const res = await fetch(API_BASE + '/products', { method: 'POST', body: formData });
-        if (res.ok) return await res.json();
         const products = getProducts();
-        const newId = 'prod-' + Date.now();
-        const files = formData.getAll('images').filter(f => f.size > 0);
-        const images = files.length > 0 ? files.map(f => URL.createObjectURL(f)) : [imgPath('images/placeholder.svg')];
+        const images = [];
+        const file = formData.get('images');
+        if (file && file.size > 0) {
+            images.push(URL.createObjectURL(file));
+        }
+        const urlInput = formData.get('imageUrl');
+        if (urlInput) images.push(urlInput);
+        if (images.length === 0) images.push(imgPath('images/placeholder.svg'));
         const product = {
-            _id: newId, name: formData.get('name'), description: formData.get('description'),
+            _id: 'prod-' + Date.now(), name: formData.get('name'), description: formData.get('description'),
             price: parseFloat(formData.get('price')), images,
             colors: JSON.parse(formData.get('colors') || '[]'), sizes: JSON.parse(formData.get('sizes') || '[]'),
             stock: parseInt(formData.get('stock') || '10'), rating: parseFloat(formData.get('rating') || '4.5'),
@@ -51,14 +56,17 @@ const API = {
         return product;
     },
     async updateProduct(id, formData) {
-        const res = await fetch(API_BASE + '/products/' + id, { method: 'PUT', body: formData });
-        if (res.ok) return await res.json();
         const products = getProducts();
         const index = products.findIndex(p => p._id === id);
         if (index === -1) throw new Error('Not found');
         const existing = products[index];
-        const files = formData.getAll('images').filter(f => f.size > 0);
-        const images = files.length > 0 ? files.map(f => URL.createObjectURL(f)) : existing.images;
+        const images = [...(existing.images || [])];
+        const file = formData.get('images');
+        if (file && file.size > 0) {
+            images.push(URL.createObjectURL(file));
+        }
+        const urlInput = formData.get('imageUrl');
+        if (urlInput) images.push(urlInput);
         const updated = {
             ...existing, name: formData.get('name') || existing.name,
             description: formData.get('description') || existing.description,
@@ -76,18 +84,12 @@ const API = {
         return updated;
     },
     async deleteProduct(id) {
-        const data = await apiFetch('/products/' + id, { method: 'DELETE' });
-        if (data) return data;
         let products = getProducts();
         products = products.filter(p => p._id !== id);
         saveProducts(products);
         return { message: 'Deleted' };
     },
     async createOrder(data) {
-        const res = await fetch(API_BASE + '/orders', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
-        });
-        if (res.ok) return await res.json();
         const orders = getOrders();
         let orderId;
         do { const num = Math.floor(1000 + Math.random() * 9000); orderId = '#' + num; }
@@ -98,20 +100,12 @@ const API = {
         return order;
     },
     async getOrders() {
-        const data = await apiFetch('/orders');
-        if (data) return data;
         return getOrders();
     },
     async getOrder(id) {
-        const data = await apiFetch('/orders/' + id);
-        if (data) return data;
         return getOrders().find(o => o._id === id) || null;
     },
     async updateOrderStatus(id, status) {
-        const data = await apiFetch('/orders/' + id + '/status', {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status })
-        });
-        if (data) return data;
         const orders = getOrders();
         const index = orders.findIndex(o => o._id === id);
         if (index === -1) throw new Error('Not found');
@@ -120,10 +114,6 @@ const API = {
         return orders[index];
     },
     async updateOrderPayment(id, paymentMethod) {
-        const data = await apiFetch('/orders/' + id + '/payment', {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentMethod })
-        });
-        if (data) return data;
         const orders = getOrders();
         const index = orders.findIndex(o => o._id === id);
         if (index === -1) throw new Error('Not found');
@@ -132,10 +122,6 @@ const API = {
         return orders[index];
     },
     async addTrackingUpdate(id, update) {
-        const data = await apiFetch('/orders/' + id + '/tracking', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(update)
-        });
-        if (data) return data;
         const orders = getOrders();
         const index = orders.findIndex(o => o._id === id);
         if (index === -1) throw new Error('Not found');
@@ -146,16 +132,12 @@ const API = {
         return orders[index];
     },
     async deleteOrder(id) {
-        const data = await apiFetch('/orders/' + id, { method: 'DELETE' });
-        if (data) return data;
         let orders = getOrders();
         orders = orders.filter(o => o._id !== id);
         saveOrders(orders);
         return { message: 'Deleted' };
     },
     async searchOrders(query) {
-        const data = await apiFetch('/orders/search/' + encodeURIComponent(query));
-        if (data) return data;
         const orders = getOrders();
         const q = query.toLowerCase();
         return orders.filter(o =>
@@ -166,43 +148,26 @@ const API = {
         );
     },
     async trackOrder(query) {
-        const data = await apiFetch('/track?q=' + encodeURIComponent(query));
-        if (data) return data;
         let order = getOrderByOrderId(query);
         if (!order) order = getOrderByPhone(query);
         return order || Promise.reject(new Error('Not found'));
     },
     async getReviews(productId) {
-        const qs = productId ? '?productId=' + productId : '';
-        const data = await apiFetch('/reviews' + qs);
-        if (data) return data;
         return getReviews(productId);
     },
     async addReview(data) {
-        const res = await fetch(API_BASE + '/reviews', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
-        });
-        if (res.ok) return await res.json();
         return addReview(data);
     },
     async deleteReview(id) {
-        const data = await apiFetch('/reviews/' + id, { method: 'DELETE' });
-        if (data) return data;
         let reviews = getReviews();
         reviews = reviews.filter(r => r._id !== id);
         saveReviews(reviews);
         return { message: 'Deleted' };
     },
     async getChats() {
-        const data = await apiFetch('/chats');
-        if (data) return data;
         return getChats();
     },
     async createChat(orderId, customerName, customerPhone) {
-        const data = await apiFetch('/chats', {
-            method: 'POST', body: JSON.stringify({ orderId, customerName, customerPhone })
-        });
-        if (data) return data;
         const chats = getChats();
         let chat = chats.find(c => c.orderId === orderId);
         if (!chat) {
@@ -213,22 +178,13 @@ const API = {
         return chat;
     },
     async getChatMessages(chatId) {
-        const data = await apiFetch('/chats/' + chatId + '/messages');
-        if (data) return data;
         const chat = getChats().find(c => c._id === chatId);
         return chat ? chat.messages : [];
     },
     async sendMessage(chatId, text, from = 'customer') {
-        const data = await apiFetch('/chats/' + chatId + '/messages', {
-            method: 'POST', body: JSON.stringify({ from, text })
-        });
-        if (data) return data;
         return addChatMessage(chatId, from, text);
     },
     async markChatRead(chatId, role = 'admin') {
-        await apiFetch('/chats/' + chatId + '/read', {
-            method: 'POST', body: JSON.stringify({ role })
-        });
         const chats = getChats();
         const chat = chats.find(c => c._id === chatId);
         if (chat) {
@@ -239,15 +195,9 @@ const API = {
         }
     },
     async getBanner() {
-        const data = await apiFetch('/banner');
-        if (data && data.text) return data;
         return getBanner();
     },
     async updateBanner(banner) {
-        const data = await apiFetch('/banner', {
-            method: 'PUT', body: JSON.stringify(banner)
-        });
-        if (data) return data;
         saveBanner(banner);
         return banner;
     }

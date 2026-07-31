@@ -158,7 +158,8 @@ function setupEditProduct() {
                 </div>
                 <label class="form-label">Replace Images (optional)</label>
                 <input type="file" name="images" accept="image/*" multiple class="form-input" style="padding:12px;">
-                <p style="color:var(--gray);font-size:12px;margin-top:4px;">Select new images to replace current ones</p>
+                <p style="color:var(--gray);font-size:12px;margin-top:4px;">Or paste an image URL instead:</p>
+                <input type="url" name="imageUrl" class="form-input" style="margin-top:6px;" placeholder="https://example.com/image.jpg">
             </div>
             <div style="grid-column:1/-1;">
                 <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
