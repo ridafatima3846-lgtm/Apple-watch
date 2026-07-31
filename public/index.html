@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WatchLux – Premium Smart Watch Store | PKR 5,500 Only</title>
     <meta name="description" content="Premium smart watches at just PKR 5,500. Free Silver Chain included. Shop the latest collection with exchange policy, COD, and WhatsApp support.">
+    <meta name="theme-color" content="#c8a45c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='15' y='30' width='70' height='50' rx='10' fill='%23c8a45c'/><rect x='25' y='38' width='50' height='34' rx='4' fill='%231a1a1a'/><circle cx='50' cy='55' r='10' fill='%23c8a45c'/><rect x='42' y='80' width='16' height='10' rx='3' fill='%23c8a45c'/><rect x='30' y='88' width='8' height='8' rx='2' fill='%238a8a8a'/><rect x='62' y='88' width='8' height='8' rx='2' fill='%238a8a8a'/></svg>">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
 </head>
 <body>
     <div class="loader">
@@ -209,6 +214,7 @@
                 <a href="contact.html">Contact</a>
                 <a href="faq.html">FAQ</a>
                 <a href="track.html">📍 Track Order</a>
+                <a href="admin/login.html" style="color:var(--gray);opacity:0.6;font-size:12px;">Admin Panel</a>
             </div>
             <div class="footer-col">
                 <h4>Policies</h4>
@@ -242,5 +248,12 @@
     <script src="js/main.js"></script>
     <script src="js/banner.js"></script>
     <script src="js/chat-widget.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
 </body>
 </html>
